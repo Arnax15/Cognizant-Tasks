@@ -1,25 +1,25 @@
-import java.util.List;
-import java.util.stream.Collectors;
+public static void calculateAverageSales(List<SalesRecord> salesRecords, String region) {
+    double averageSales = salesRecords.stream()
+            .filter(record -> record.getRegion().equals(region))
+            .mapToDouble(record -> record.getAmount())
+            .average()
+            .orElse(0.0);
+    System.out.println("Average sales: " + averageSales);
+}
 
-public class SalesAnalysis {
-    public static void main(String[] args) {
-        List<SalesRecord> salesRecords = new ArrayList<>();
-        // add sample sales records
+public static void findTopSalesRecord(List<SalesRecord> salesRecords) {
+    SalesRecord topRecord = salesRecords.stream()
+            .max((record1, record2) -> Double.compare(record1.getAmount(), record2.getAmount()))
+            .orElse(null);
+    System.out.println("Top sales record: " + topRecord);
+}
 
-        filterAndSortRecords(salesRecords, "Electronics");
-        calculateAverageSales(salesRecords, "North");
-        findTopSalesRecord(salesRecords);
-        parallelStreamOperations(salesRecords);
-    }
-
-    public static void filterAndSortRecords(List<SalesRecord> salesRecords, String productCategory) {
-        salesRecords.stream()
-                .filter(record -> record.getProductCategory().equals(productCategory))
-                .sorted((record1, record2) -> record1.getDate().compareTo(record2.getDate()))
-                .forEach(System.out::println);
-    }
-
-    public static void calculateAverageSales(List<SalesRecord> salesRecords, String region) {
-        double averageSales = salesRecords.stream()
-                .filter(record -> record.getRegion().equals(region))
-                .map
+public static void parallelStreamOperations(List<SalesRecord> salesRecords) {
+    long startTime = System.currentTimeMillis();
+    salesRecords.parallelStream()
+            .filter(record -> record.getProductCategory().equals("Electronics"))
+            .sorted((record1, record2) -> record1.getDate().compareTo(record2.getDate()))
+            .forEach(System.out::println);
+    long endTime = System.currentTimeMillis();
+    System.out.println("Parallel stream operation time: " + (endTime - startTime) + " ms");
+}
